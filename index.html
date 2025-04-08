@@ -2,222 +2,176 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Which Version is Better?</title>
-  
-  <!-- Importing Avenir font -->
-  <link href="https://fonts.googleapis.com/css2?family=Avenir:wght@300;400;600&display=swap" rel="stylesheet">
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.5/jstat.min.js"></script>
   <style>
     body {
-      font-family: 'Avenir', sans-serif;
+      font-family: sans-serif;
       background: #f7f9fc;
       padding: 2rem;
       margin: 0;
       font-size: 16px;
       color: #333;
     }
-
     h1 {
-      color: #333;
       font-weight: 600;
     }
-
-    h1 span {
-      font-size: 1.2rem;
-      font-weight: 400;
-    }
-
     .input-group {
       display: flex;
       flex-direction: column;
-      margin-top: 1.5rem;
+      margin-top: 1rem;
       width: 300px;
     }
-
     .input-group label {
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
-
     .input-group input {
-      padding: 0.8rem;
+      padding: 0.6rem;
       font-size: 1rem;
       border: 1px solid #ddd;
       border-radius: 6px;
       margin-bottom: 1rem;
-      background-color: #fff;
     }
-
     button {
       padding: 0.7rem 1.2rem;
       font-size: 1rem;
-      background-color: #50c878; /* A nice green */
+      background-color: #50c878;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      margin-top: 1rem;
     }
-
     button:hover {
       background-color: #45a65e;
     }
-
     #results {
       display: none;
       margin-top: 2rem;
       background: #fff;
       padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      font-family: monospace;
-      min-height: 0;
-    }
-
-    .form-container {
-      background-color: #fff;
-      padding: 2rem;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
+      border: 1px solid #ccc;
     }
-
     table {
       border-collapse: collapse;
-      margin-top: 1rem;
       width: 100%;
+      margin-top: 1rem;
     }
-
     th, td {
       border: 1px solid #ccc;
-      padding: 0.5rem;
+      padding: 0.6rem;
       text-align: center;
     }
-
     th {
       background: #f0f0f0;
     }
-
   </style>
 </head>
 <body>
-  <div class="form-container">
-    <h1>Welcome 👋 to <span>versa</span> — Your All-in-One UXR & Product building tool!</h1>
-    <p>Unlock the power of data-driven decisions. Whether you're testing new features, comparing versions, or just looking for clarity, versa’s intuitive calculators give you the insights you need in seconds. Dive deep, get clear answers, and make smarter choices.</p>
+  <h1>Welcome 👋 to your A/B Testing Calculator</h1>
+  <p>Compare two versions and get clarity on which performs better.</p>
 
-    <div class="input-group">
-      <label for="v1_passes">Design 1 (Successes):</label>
-      <input type="number" id="v1_passes" />
-    </div>
-    <div class="input-group">
-      <label for="v1_total">Design 1 (Total):</label>
-      <input type="number" id="v1_total" />
-    </div>
-    <div class="input-group">
-      <label for="v2_passes">Design 2 (Successes):</label>
-      <input type="number" id="v2_passes" />
-    </div>
-    <div class="input-group">
-      <label for="v2_total">Design 2 (Total):</label>
-      <input type="number" id="v2_total" />
-    </div>
-
+  <div class="input-group">
+    <label for="v1_passes">Design 1 (Successes):</label>
+    <input type="number" id="v1_passes" />
+    <label for="v1_total">Design 1 (Total):</label>
+    <input type="number" id="v1_total" />
+    <label for="v2_passes">Design 2 (Successes):</label>
+    <input type="number" id="v2_passes" />
+    <label for="v2_total">Design 2 (Total):</label>
+    <input type="number" id="v2_total" />
     <button onclick="calculate()">Calculate</button>
   </div>
 
   <div id="results"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.5/jstat.min.js"></script>
-<script>
-function calculate() {
-  const v1_passes = parseInt(document.getElementById("v1_passes").value);
-  const v1_total = parseInt(document.getElementById("v1_total").value);
-  const v2_passes = parseInt(document.getElementById("v2_passes").value);
-  const v2_total = parseInt(document.getElementById("v2_total").value);
+  <script>
+    function calculate() {
+      const v1_passes = parseInt(document.getElementById("v1_passes").value);
+      const v1_total = parseInt(document.getElementById("v1_total").value);
+      const v2_passes = parseInt(document.getElementById("v2_passes").value);
+      const v2_total = parseInt(document.getElementById("v2_total").value);
 
-  if (
-    isNaN(v1_passes) || isNaN(v1_total) || isNaN(v2_passes) || isNaN(v2_total) ||
-    v1_passes > v1_total || v2_passes > v2_total || v1_passes < 0 || v2_passes < 0
-  ) {
-    document.getElementById("results").style.display = "block";
-    document.getElementById("results").innerHTML = "<p>Please enter valid numbers. Successes must be ≤ total.</p>";
-    return;
-  }
+      if (
+        isNaN(v1_passes) || isNaN(v1_total) || isNaN(v2_passes) || isNaN(v2_total) ||
+        v1_passes > v1_total || v2_passes > v2_total || v1_passes < 0 || v2_passes < 0
+      ) {
+        document.getElementById("results").style.display = "block";
+        document.getElementById("results").innerHTML = "<p>Please enter valid numbers. Successes must be ≤ total.</p>";
+        return;
+      }
 
-  const a1 = v1_passes + 1;
-  const b1 = v1_total - v1_passes + 1;
-  const a2 = v2_passes + 1;
-  const b2 = v2_total - v2_passes + 1;
+      const a1 = v1_passes + 1;
+      const b1 = v1_total - v1_passes + 1;
+      const a2 = v2_passes + 1;
+      const b2 = v2_total - v2_passes + 1;
 
-  const simulations = 100000;
-  let wins = 0;
-  for (let i = 0; i < simulations; i++) {
-    const s1 = jStat.beta.sample(a1, b1);
-    const s2 = jStat.beta.sample(a2, b2);
-    if (s1 > s2) wins++;
-  }
+      const simulations = 100000;
+      let wins = 0;
+      for (let i = 0; i < simulations; i++) {
+        const s1 = jStat.beta.sample(a1, b1);
+        const s2 = jStat.beta.sample(a2, b2);
+        if (s1 > s2) wins++;
+      }
 
-  const p_direction = Math.round((wins / simulations) * 100);
-  const p_v2_better = 100 - p_direction;
+      const p_direction = Math.round((wins / simulations) * 100);
+      const p_v2_better = 100 - p_direction;
 
-  function classifyEvidence(p) {
-    if (p === 50) return "No evidence (tie)";
-    if (p > 50 && p <= 80) return "Weak evidence";
-    if (p > 80 && p <= 95) return "Moderate evidence";
-    if (p > 95 && p <= 99) return "Strong evidence";
-    return "Very strong evidence";
-  }
+      function classifyEvidence(p) {
+        if (p === 50) return "No evidence (tie)";
+        if (p > 50 && p <= 80) return "Weak evidence";
+        if (p > 80 && p <= 95) return "Moderate evidence";
+        if (p > 95 && p <= 99) return "Strong evidence";
+        return "Very strong evidence";
+      }
 
-  const observed_p1 = Math.round((v1_passes / v1_total) * 100);
-  const observed_p2 = Math.round((v2_passes / v2_total) * 100);
-  const best_estimate_p1 = Math.round((a1 / (a1 + b1)) * 100);
-  const best_estimate_p2 = Math.round((a2 / (a2 + b2)) * 100);
+      const observed_p1 = Math.round((v1_passes / v1_total) * 100);
+      const observed_p2 = Math.round((v2_passes / v2_total) * 100);
+      const best_estimate_p1 = Math.round((a1 / (a1 + b1)) * 100);
+      const best_estimate_p2 = Math.round((a2 / (a2 + b2)) * 100);
 
-  // Confidence intervals (95% CI from Beta)
-  const ci1_low = Math.round(jStat.beta.inv(0.025, a1, b1) * 100);
-  const ci1_high = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
-  const ci2_low = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
-  const ci2_high = Math.round(jStat.beta.inv(0.975, a2, b2) * 100);
+      const ci1_low = Math.round(jStat.beta.inv(0.025, a1, b1) * 100);
+      const ci1_high = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
+      const ci2_low = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
+      const ci2_high = Math.round(jStat.beta.inv(0.975, a2, b2) * 100);
 
-  // Fisher's exact test approximation using a 2x2 table
-  const n11 = v1_passes;
-  const n12 = v1_total - v1_passes;
-  const n21 = v2_passes;
-  const n22 = v2_total - v2_passes;
+      const n11 = v1_passes;
+      const n12 = v1_total - v1_passes;
+      const n21 = v2_passes;
+      const n22 = v2_total - v2_passes;
 
-  const fisher_p = jStat.fisherexact([[n11, n12], [n21, n22]], false);
-  const z_score = fisher_p > 0 ? Math.round(jStat.normal.inv(1 - fisher_p / 2, 0, 1) * 1000) / 1000 : "N/A";
-  const significant = fisher_p < 0.05 ? "Yes" : "No";
+      const fisher_p = jStat.fisherexact([[n11, n12], [n21, n22]], false);
+      const z_score = fisher_p > 0 ? Math.round(jStat.normal.inv(1 - fisher_p / 2, 0, 1) * 1000) / 1000 : "N/A";
+      const significant = fisher_p < 0.05 ? "Yes" : "No";
 
-  const html = `
-    <table>
-      <tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr>
-      <tr><td>V1</td><td>${observed_p1}%</td><td>${best_estimate_p1}%</td><td>${ci1_low}%</td><td>${ci1_high}%</td></tr>
-      <tr><td>V2</td><td>${observed_p2}%</td><td>${best_estimate_p2}%</td><td>${ci2_low}%</td><td>${ci2_high}%</td></tr>
-    </table>
+      const html = `
+        <table>
+          <tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr>
+          <tr><td>V1</td><td>${observed_p1}%</td><td>${best_estimate_p1}%</td><td>${ci1_low}%</td><td>${ci1_high}%</td></tr>
+          <tr><td>V2</td><td>${observed_p2}%</td><td>${best_estimate_p2}%</td><td>${ci2_low}%</td><td>${ci2_high}%</td></tr>
+        </table>
 
-    <table>
-      <tr><th>Metric</th><th>V1 > V2</th><th>V2 > V1</th></tr>
-      <tr><td>P-Direction</td><td>${p_direction}%</td><td>${p_v2_better}%</td></tr>
-      <tr><td>Evidence</td><td>${classifyEvidence(p_direction)}</td><td>${classifyEvidence(p_v2_better)}</td></tr>
-    </table>
+        <table>
+          <tr><th>Metric</th><th>V1 > V2</th><th>V2 > V1</th></tr>
+          <tr><td>P-Direction</td><td>${p_direction}%</td><td>${p_v2_better}%</td></tr>
+          <tr><td>Evidence</td><td>${classifyEvidence(p_direction)}</td><td>${classifyEvidence(p_v2_better)}</td></tr>
+        </table>
 
-    <table>
-      <tr><th>Metric</th><th>Value</th></tr>
-      <tr><td>Fisher's Exact P</td><td>${fisher_p.toFixed(5)}</td></tr>
-      <tr><td>Statistically Significant?</td><td>${significant}</td></tr>
-      <tr><td>Z-Score</td><td>${z_score}</td></tr>
-    </table>
-  `;
+        <table>
+          <tr><th>Metric</th><th>Value</th></tr>
+          <tr><td>Fisher's Exact P</td><td>${fisher_p.toFixed(5)}</td></tr>
+          <tr><td>Statistically Significant?</td><td>${significant}</td></tr>
+          <tr><td>Z-Score</td><td>${z_score}</td></tr>
+        </table>
+      `;
 
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.style.display = "block";
-  resultsDiv.innerHTML = html;
-}
-</script>
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.style.display = "block";
+      resultsDiv.innerHTML = html;
+    }
+  </script>
 </body>
 </html>
