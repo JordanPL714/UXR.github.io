@@ -52,6 +52,46 @@
       box-sizing: border-box;
     }
 
+    .input-box h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      white-space: nowrap;
+    }
+
+    label {
+      display: block;
+      margin-top: 1.2rem;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 0.9rem;
+      font-size: 1rem;
+      font-weight: 700;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a65e;
+    }
+
     .results, .summary {
       flex: 1;
       max-width: 500px;
@@ -87,8 +127,8 @@
 <body>
   <div class="header-logo">versa</div>
   <div class="intro">
-    <h1>Welcome 👋 to <span>versa</span> - Your All-in-One UXR & Product building tool!</h1>
-    <p>Unlock the power of data-driven decisions. Whether you're testing new features, comparing versions, or just looking for clarity, versa’s intuitive calculators give you the insights you need in seconds.</p>
+    <h1> Your All-in-One UXR preditcion tool!</h1>
+    <p>Unlock the power of data-driven decisions. Whether you're testing new features, comparing versions, or just looking for clarity, versa’s intuitive calculators give you the insights you need in seconds. Dive deep, get clear answers, and make smarter choices.</p>
   </div>
 
   <div class="container">
@@ -146,7 +186,7 @@
 
     function logHypergeometric(a, b, c, d) {
       return logFactorial(a + b) + logFactorial(c + d) + logFactorial(a + c) + logFactorial(b + d)
-        - (logFactorial(a) + logFactorial(b) + logFactorial(c) + logFactorial(d) + logFactorial(a + b + c + d));
+           - (logFactorial(a) + logFactorial(b) + logFactorial(c) + logFactorial(d) + logFactorial(a + b + c + d));
     }
 
     function fisherExactP(a, b, c, d) {
@@ -155,12 +195,14 @@
       const observedLogP = logHypergeometric(a, b, c, d);
       const observedP = Math.exp(observedLogP);
       let p = 0;
+
       for (let x = 0; x <= Math.min(n1, a + c); x++) {
         let y = a + c - x;
         if (y < 0 || y > n2) continue;
         const prob = Math.exp(logHypergeometric(x, n1 - x, y, n2 - y));
         if (prob <= observedP + 1e-10) p += prob;
       }
+
       return p;
     }
 
@@ -172,16 +214,14 @@
       return "Very strong evidence";
     }
 
-    function generateTakeaway(p, direction, simulatedWins, p_direction, winner, emoji) {
-      if (p === 50) {
-        return `<p>🧠 There is no evidence favoring either design. Results are evenly split.</p>`;
-      }
+    function generateTakeaway(p, direction, simulatedWins, oddsRatio, winner, emoji) {
+      if (p === 50) return "There is no evidence favoring either design. Results are evenly split.";
       const evidence = classifyEvidence(p);
       const loser = direction === "v1" ? "Design 2" : "Design 1";
       return `
         <p>🧠 There is <strong>${evidence.toLowerCase()}</strong> that <strong>${winner}</strong> performs better than <strong>${loser}</strong>.</p>
         <p>🔬 Simulated Wins: <strong>${winner}</strong> won <strong>${simulatedWins}</strong> out of 100,000 simulations ${emoji}</p>
-        <p>📊 Directional Evidence: There’s a <strong>${p_direction}%</strong> chance that ${winner} is better than ${loser}</p>
+        <p>📊 Odds Ratio: Users were <strong>${oddsRatio}</strong>× more likely to succeed with ${winner}</p>
       `;
     }
 
@@ -203,6 +243,7 @@
 
       const a1 = v1_passes + 1, b1 = v1_total - v1_passes + 1;
       const a2 = v2_passes + 1, b2 = v2_total - v2_passes + 1;
+
       const sims = 100000;
       let wins = 0;
       for (let i = 0; i < sims; i++) {
@@ -213,6 +254,7 @@
 
       const p_dir = Math.round((wins / sims) * 100);
       const p_rev = 100 - p_dir;
+
       const obs1 = Math.round((v1_passes / v1_total) * 100);
       const obs2 = Math.round((v2_passes / v2_total) * 100);
       const est1 = Math.round((a1 / (a1 + b1)) * 100);
@@ -221,6 +263,7 @@
       const ci1_hi = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
       const ci2_lo = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
       const ci2_hi = Math.round(jStat.beta.inv(0.975, a2, b2) * 100);
+
       const a = v1_passes, b = v1_total - v1_passes;
       const c = v2_passes, d = v2_total - v2_passes;
       const fisher = fisherExactP(a, b, c, d);
@@ -245,13 +288,19 @@
       const winner = direction === "v1" ? "Design 1" : direction === "v2" ? "Design 2" : "Neither design";
       const emoji = direction === "v1" ? "💚" : direction === "v2" ? "💙" : "⚖️";
       const simulatedWins = Math.round((Math.max(p_dir, p_rev) / 100) * sims);
-      const pDirFinal = p_dir > 50 ? p_dir : p_rev;
+
+      let oddsRatio = "N/A";
+      if (v1_passes !== 0 && v2_passes !== 0 && (v1_total - v1_passes) !== 0 && (v2_total - v2_passes) !== 0) {
+        const odds1 = v1_passes / (v1_total - v1_passes);
+        const odds2 = v2_passes / (v2_total - v2_passes);
+        oddsRatio = (odds2 / odds1).toFixed(2);
+      }
 
       const takeaway = generateTakeaway(
-        pDirFinal,
+        p_dir > 50 ? p_dir : p_rev,
         direction,
         simulatedWins,
-        pDirFinal,
+        oddsRatio,
         winner,
         emoji
       );
