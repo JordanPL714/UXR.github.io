@@ -83,73 +83,108 @@
 
   <div id="results"></div>
 
-  <script>
-    function calculate() {
-      const v1_passes = parseInt(document.getElementById("v1_passes").value);
-      const v1_total = parseInt(document.getElementById("v1_total").value);
-      const v2_passes = parseInt(document.getElementById("v2_passes").value);
-      const v2_total = parseInt(document.getElementById("v2_total").value);
-
-      if (
-        isNaN(v1_passes) || isNaN(v1_total) || isNaN(v2_passes) || isNaN(v2_total) ||
-        v1_passes > v1_total || v2_passes > v2_total || v1_passes < 0 || v2_passes < 0
-      ) {
-        document.getElementById("results").style.display = "block";
-        document.getElementById("results").innerHTML = "<p>Please enter valid numbers.</p>";
-        return;
-      }
-
-      const a1 = v1_passes + 1;
-      const b1 = v1_total - v1_passes + 1;
-      const a2 = v2_passes + 1;
-      const b2 = v2_total - v2_passes + 1;
-
-      const sims = 100000;
-      let wins = 0;
-      for (let i = 0; i < sims; i++) {
-        const s1 = jStat.beta.sample(a1, b1);
-        const s2 = jStat.beta.sample(a2, b2);
-        if (s1 > s2) wins++;
-      }
-
-      const p_dir = Math.round((wins / sims) * 100);
-      const p_rev = 100 - p_dir;
-
-      function classifyEvidence(p) {
-        if (p === 50) return "No evidence (tie)";
-        if (p > 50 && p <= 80) return "Weak evidence";
-        if (p > 80 && p <= 95) return "Moderate evidence";
-        if (p > 95 && p <= 99) return "Strong evidence";
-        return "Very strong evidence";
-      }
-
-      const obs1 = Math.round((v1_passes / v1_total) * 100);
-      const obs2 = Math.round((v2_passes / v2_total) * 100);
-      const est1 = Math.round((a1 / (a1 + b1)) * 100);
-      const est2 = Math.round((a2 / (a2 + b2)) * 100);
-
-      const ci1_lo = Math.round(jStat.beta.inv(0.025, a1, b1) * 100);
-      const ci1_hi = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
-      const ci2_lo = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
-      const ci2_hi = Math.round(jStat.beta.inv(0.975, a2, b2) * 100);
-
-      const html = `
-        <table>
-          <tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr>
-          <tr><td>V1</td><td>${obs1}%</td><td>${est1}%</td><td>${ci1_lo}%</td><td>${ci1_hi}%</td></tr>
-          <tr><td>V2</td><td>${obs2}%</td><td>${est2}%</td><td>${ci2_lo}%</td><td>${ci2_hi}%</td></tr>
-        </table>
-        <table>
-          <tr><th>Metric</th><th>V1 > V2</th><th>V2 > V1</th></tr>
-          <tr><td>P-Direction</td><td>${p_dir}%</td><td>${p_rev}%</td></tr>
-          <tr><td>Evidence</td><td>${classifyEvidence(p_dir)}</td><td>${classifyEvidence(p_rev)}</td></tr>
-        </table>
-      `;
-
-      const results = document.getElementById("results");
-      results.style.display = "block";
-      results.innerHTML = html;
+ <script>
+  // Log factorial to avoid overflow
+  function logFactorial(n) {
+    let result = 0;
+    for (let i = 2; i <= n; i++) {
+      result += Math.log(i);
     }
-  </script>
+    return result;
+  }
+
+  // Hypergeometric p-value for 2x2 table
+  function fisherExactTest(a, b, c, d) {
+    const n = a + b + c + d;
+    const logP = logFactorial(a + b) + logFactorial(c + d) + logFactorial(a + c) + logFactorial(b + d)
+               - (logFactorial(a) + logFactorial(b) + logFactorial(c) + logFactorial(d) + logFactorial(n));
+    return Math.exp(logP);
+  }
+
+  function calculate() {
+    const v1_passes = parseInt(document.getElementById("v1_passes").value);
+    const v1_total = parseInt(document.getElementById("v1_total").value);
+    const v2_passes = parseInt(document.getElementById("v2_passes").value);
+    const v2_total = parseInt(document.getElementById("v2_total").value);
+
+    if (
+      isNaN(v1_passes) || isNaN(v1_total) || isNaN(v2_passes) || isNaN(v2_total) ||
+      v1_passes > v1_total || v2_passes > v2_total || v1_passes < 0 || v2_passes < 0
+    ) {
+      document.getElementById("results").style.display = "block";
+      document.getElementById("results").innerHTML = "<p>Please enter valid numbers.</p>";
+      return;
+    }
+
+    const a1 = v1_passes + 1;
+    const b1 = v1_total - v1_passes + 1;
+    const a2 = v2_passes + 1;
+    const b2 = v2_total - v2_passes + 1;
+
+    const sims = 100000;
+    let wins = 0;
+    for (let i = 0; i < sims; i++) {
+      const s1 = jStat.beta.sample(a1, b1);
+      const s2 = jStat.beta.sample(a2, b2);
+      if (s1 > s2) wins++;
+    }
+
+    const p_dir = Math.round((wins / sims) * 100);
+    const p_rev = 100 - p_dir;
+
+    function classifyEvidence(p) {
+      if (p === 50) return "No evidence (tie)";
+      if (p > 50 && p <= 80) return "Weak evidence";
+      if (p > 80 && p <= 95) return "Moderate evidence";
+      if (p > 95 && p <= 99) return "Strong evidence";
+      return "Very strong evidence";
+    }
+
+    const obs1 = Math.round((v1_passes / v1_total) * 100);
+    const obs2 = Math.round((v2_passes / v2_total) * 100);
+    const est1 = Math.round((a1 / (a1 + b1)) * 100);
+    const est2 = Math.round((a2 / (a2 + b2)) * 100);
+
+    const ci1_lo = Math.round(jStat.beta.inv(0.025, a1, b1) * 100);
+    const ci1_hi = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
+    const ci2_lo = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
+    const ci2_hi = Math.round(jStat.beta.inv(0.975, a2, b2) * 100);
+
+    // Fisher's Exact Test: 2x2 table
+    const a = v1_passes;
+    const b = v1_total - v1_passes;
+    const c = v2_passes;
+    const d = v2_total - v2_passes;
+    const fisher_p = fisherExactTest(a, b, c, d);
+    const significant = fisher_p < 0.05 ? "Yes" : "No";
+    const z_score = fisher_p > 0 ? Math.round(jStat.normal.inv(1 - fisher_p / 2, 0, 1) * 1000) / 1000 : "N/A";
+
+    const html = `
+      <table>
+        <tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr>
+        <tr><td>V1</td><td>${obs1}%</td><td>${est1}%</td><td>${ci1_lo}%</td><td>${ci1_hi}%</td></tr>
+        <tr><td>V2</td><td>${obs2}%</td><td>${est2}%</td><td>${ci2_lo}%</td><td>${ci2_hi}%</td></tr>
+      </table>
+
+      <table>
+        <tr><th>Metric</th><th>V1 > V2</th><th>V2 > V1</th></tr>
+        <tr><td>P-Direction</td><td>${p_dir}%</td><td>${p_rev}%</td></tr>
+        <tr><td>Evidence</td><td>${classifyEvidence(p_dir)}</td><td>${classifyEvidence(p_rev)}</td></tr>
+      </table>
+
+      <table>
+        <tr><th>Statistical Test</th><th>Value</th></tr>
+        <tr><td>Fisher’s Exact P</td><td>${fisher_p.toFixed(5)}</td></tr>
+        <tr><td>Statistically Significant?</td><td>${significant}</td></tr>
+        <tr><td>Z-Score</td><td>${z_score}</td></tr>
+      </table>
+    `;
+
+    const results = document.getElementById("results");
+    results.style.display = "block";
+    results.innerHTML = html;
+  }
+</script>
+
 </body>
 </html>
