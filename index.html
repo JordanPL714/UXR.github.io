@@ -9,28 +9,32 @@
   <style>
     body {
       font-family: 'Inter', 'Avenir', sans-serif;
-      background: #ffffff;
+      background: #fff;
       margin: 0;
       padding: 2rem;
       color: #111;
       font-size: 16px;
-      line-height: 1.6;
     }
 
     h1 {
       font-size: 2rem;
       font-weight: 600;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.5rem;
     }
 
     h1 span {
       font-weight: 800;
-      color: #111;
     }
 
     .intro {
-      max-width: 600px;
+      max-width: 700px;
       margin-bottom: 2rem;
+    }
+
+    .container {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
     }
 
     .input-box {
@@ -38,20 +42,19 @@
       border: 2px solid #b6f1b6;
       border-radius: 12px;
       padding: 1.5rem;
-      max-width: 340px;
+      width: 300px;
     }
 
     .input-box h2 {
-      margin-top: 0;
       font-size: 1.2rem;
       font-weight: 600;
-      color: #111;
+      margin-top: 0;
       margin-bottom: 1rem;
     }
 
     label {
       display: block;
-      margin-top: 0.8rem;
+      margin-top: 1rem;
       font-weight: 500;
     }
 
@@ -59,21 +62,20 @@
       width: 100%;
       padding: 0.6rem;
       font-size: 1rem;
-      margin-top: 0.3rem;
       border-radius: 6px;
       border: 1px solid #ccc;
     }
 
     button {
-      margin-top: 1.2rem;
-      padding: 0.8rem;
+      margin-top: 1.5rem;
       width: 100%;
+      padding: 0.8rem;
       font-size: 1rem;
-      background-color: #50c878;
+      font-weight: 600;
+      background-color: #4CAF50;
       color: white;
       border: none;
       border-radius: 6px;
-      font-weight: 600;
       cursor: pointer;
     }
 
@@ -81,19 +83,18 @@
       background-color: #45a65e;
     }
 
-    #results {
-      margin-top: 2rem;
+    .results {
+      flex: 1;
+      max-width: 700px;
       background: #f9f9f9;
       padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      display: none;
-      max-width: 700px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
     }
 
     table {
-      border-collapse: collapse;
       width: 100%;
+      border-collapse: collapse;
       margin-top: 1rem;
     }
 
@@ -104,17 +105,13 @@
     }
 
     th {
-      background-color: #f0f0f0;
+      background: #eee;
     }
 
     .header-logo {
       font-size: 1.8rem;
       font-weight: 800;
       margin-bottom: 1rem;
-    }
-
-    .header-logo span {
-      color: #111;
     }
   </style>
 </head>
@@ -126,24 +123,53 @@
     <p>Unlock the power of data-driven decisions. Whether you're testing new features, comparing versions, or just looking for clarity, versa’s intuitive calculators give you the insights you need in seconds. Dive deep, get clear answers, and make smarter choices.</p>
   </div>
 
-  <div class="input-box">
-    <h2>Which design should we use 🔍?</h2>
-    <label for="v1_passes">Design 1 (Successes):</label>
-    <input type="number" id="v1_passes" />
+  <div class="container">
+    <div class="input-box">
+      <h2>Which design should we use 🔍?</h2>
+      <label for="v1_passes">Design 1 (Successes):</label>
+      <input type="number" id="v1_passes" />
+      <label for="v1_total">Design 1 (Total):</label>
+      <input type="number" id="v1_total" />
+      <label for="v2_passes">Design 2 (Successes):</label>
+      <input type="number" id="v2_passes" />
+      <label for="v2_total">Design 2 (Total):</label>
+      <input type="number" id="v2_total" />
+      <button onclick="calculate()">Calculate</button>
+    </div>
 
-    <label for="v1_total">Design 1 (Total):</label>
-    <input type="number" id="v1_total" />
+    <div class="results">
+      <table>
+        <thead>
+          <tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Design 1</td><td id="obs1">--</td><td id="est1">--</td><td id="ci1low">--</td><td id="ci1high">--</td></tr>
+          <tr><td>Design 2</td><td id="obs2">--</td><td id="est2">--</td><td id="ci2low">--</td><td id="ci2high">--</td></tr>
+        </tbody>
+      </table>
 
-    <label for="v2_passes">Design 2 (Successes):</label>
-    <input type="number" id="v2_passes" />
+      <table>
+        <thead>
+          <tr><th>Metric</th><th>Design 1 &gt; 2</th><th>Design 2 &gt; 1</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>P-Direction</td><td id="pd1">--</td><td id="pd2">--</td></tr>
+          <tr><td>Evidence</td><td id="ev1">--</td><td id="ev2">--</td></tr>
+        </tbody>
+      </table>
 
-    <label for="v2_total">Design 2 (Total):</label>
-    <input type="number" id="v2_total" />
-
-    <button onclick="calculate()">Calculate</button>
+      <table>
+        <thead>
+          <tr><th>Statistical Test</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Fisher’s Exact P</td><td id="fisher">--</td></tr>
+          <tr><td>Statistically Significant?</td><td id="sig">--</td></tr>
+          <tr><td>Z-Score</td><td id="z">--</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-  <div id="results"></div>
 
   <script>
     function logFactorial(n) {
@@ -155,8 +181,16 @@
     function fisherExactTest(a, b, c, d) {
       const n = a + b + c + d;
       const logP = logFactorial(a + b) + logFactorial(c + d) + logFactorial(a + c) + logFactorial(b + d)
-                 - (logFactorial(a) + logFactorial(b) + logFactorial(c) + logFactorial(d) + logFactorial(n));
+        - (logFactorial(a) + logFactorial(b) + logFactorial(c) + logFactorial(d) + logFactorial(n));
       return Math.exp(logP);
+    }
+
+    function classifyEvidence(p) {
+      if (p === 50) return "No evidence";
+      if (p > 50 && p <= 80) return "Weak evidence";
+      if (p > 80 && p <= 95) return "Moderate evidence";
+      if (p > 95 && p <= 99) return "Strong evidence";
+      return "Very strong evidence";
     }
 
     function calculate() {
@@ -169,8 +203,7 @@
         isNaN(v1_passes) || isNaN(v1_total) || isNaN(v2_passes) || isNaN(v2_total) ||
         v1_passes > v1_total || v2_passes > v2_total || v1_passes < 0 || v2_passes < 0
       ) {
-        document.getElementById("results").style.display = "block";
-        document.getElementById("results").innerHTML = "<p>Please enter valid numbers.</p>";
+        alert("Please enter valid numbers.");
         return;
       }
 
@@ -188,19 +221,10 @@
       const p_dir = Math.round((wins / sims) * 100);
       const p_rev = 100 - p_dir;
 
-      function classifyEvidence(p) {
-        if (p === 50) return "No evidence (tie)";
-        if (p > 50 && p <= 80) return "Weak evidence";
-        if (p > 80 && p <= 95) return "Moderate evidence";
-        if (p > 95 && p <= 99) return "Strong evidence";
-        return "Very strong evidence";
-      }
-
       const obs1 = Math.round((v1_passes / v1_total) * 100);
       const obs2 = Math.round((v2_passes / v2_total) * 100);
       const est1 = Math.round((a1 / (a1 + b1)) * 100);
       const est2 = Math.round((a2 / (a2 + b2)) * 100);
-
       const ci1_lo = Math.round(jStat.beta.inv(0.025, a1, b1) * 100);
       const ci1_hi = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
       const ci2_lo = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
@@ -208,34 +232,30 @@
 
       const a = v1_passes, b = v1_total - v1_passes;
       const c = v2_passes, d = v2_total - v2_passes;
-      const fisher_p = fisherExactTest(a, b, c, d);
-      const significant = fisher_p < 0.05 ? "Yes" : "No";
-      const z_score = fisher_p > 0 ? Math.round(jStat.normal.inv(1 - fisher_p / 2, 0, 1) * 1000) / 1000 : "N/A";
+      const fisher = fisherExactTest(a, b, c, d);
+      const z = fisher > 0 ? Math.round(jStat.normal.inv(1 - fisher / 2, 0, 1) * 1000) / 1000 : "N/A";
+      const sig = fisher < 0.05 ? "Yes" : "No";
 
-      const html = `
-        <table>
-          <tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr>
-          <tr><td>Design 1</td><td>${obs1}%</td><td>${est1}%</td><td>${ci1_lo}%</td><td>${ci1_hi}%</td></tr>
-          <tr><td>Design 2</td><td>${obs2}%</td><td>${est2}%</td><td>${ci2_lo}%</td><td>${ci2_hi}%</td></tr>
-        </table>
+      // Update table cells
+      document.getElementById("obs1").textContent = `${obs1}%`;
+      document.getElementById("obs2").textContent = `${obs2}%`;
+      document.getElementById("est1").textContent = `${est1}%`;
+      document.getElementById("est2").textContent = `${est2}%`;
+      document.getElementById("ci1low").textContent = `${ci1_lo}%`;
+      document.getElementById("ci1high").textContent = `${ci1_hi}%`;
+      document.getElementById("ci2low").textContent = `${ci2_lo}%`;
+      document.getElementById("ci2high").textContent = `${ci2_hi}%`;
 
-        <table>
-          <tr><th>Metric</th><th>Design 1 > 2</th><th>Design 2 > 1</th></tr>
-          <tr><td>P-Direction</td><td>${p_dir}%</td><td>${p_rev}%</td></tr>
-          <tr><td>Evidence</td><td>${classifyEvidence(p_dir)}</td><td>${classifyEvidence(p_rev)}</td></tr>
-        </table>
+      document.getElementById("pd1").textContent = `${p_dir}%`;
+      document.getElementById("pd2").textContent = `${p_rev}%`;
 
-        <table>
-          <tr><th>Statistical Test</th><th>Value</th></tr>
-          <tr><td>Fisher’s Exact P</td><td>${fisher_p.toFixed(5)}</td></tr>
-          <tr><td>Statistically Significant?</td><td>${significant}</td></tr>
-          <tr><td>Z-Score</td><td>${z_score}</td></tr>
-        </table>
-      `;
+      // Show only the winning evidence
+      document.getElementById("ev1").textContent = p_dir > 50 ? classifyEvidence(p_dir) : "--";
+      document.getElementById("ev2").textContent = p_rev > 50 ? classifyEvidence(p_rev) : "--";
 
-      const results = document.getElementById("results");
-      results.style.display = "block";
-      results.innerHTML = html;
+      document.getElementById("fisher").textContent = fisher.toFixed(5);
+      document.getElementById("sig").textContent = sig;
+      document.getElementById("z").textContent = z;
     }
   </script>
 </body>
