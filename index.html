@@ -92,9 +92,9 @@
       background-color: #45a65e;
     }
 
-    .results, .summary, .fun-stats {
+    .results, .summary {
       flex: 1;
-      max-width: 300px;
+      max-width: 340px;
       background: #f9f9f9;
       padding: 1.2rem;
       border-radius: 10px;
@@ -105,11 +105,6 @@
     .summary {
       background: #f0f8ff;
       border-color: #ccd;
-    }
-
-    .fun-stats {
-      background: #fffbea;
-      border-color: #e5d97f;
     }
 
     table {
@@ -178,12 +173,7 @@
 
     <div class="summary">
       <strong>Summary:</strong>
-      <p id="takeaway">--</p>
-    </div>
-
-    <div class="fun-stats">
-      <strong>Fun Stats 🎉</strong>
-      <p id="funfact">--</p>
+      <div id="takeaway">--</div>
     </div>
   </div>
 
@@ -224,12 +214,15 @@
       return "Very strong evidence";
     }
 
-    function generateTakeaway(p, direction) {
-      const evidence = classifyEvidence(p);
+    function generateTakeaway(p, direction, simulatedWins, oddsRatio, winner, emoji) {
       if (p === 50) return "There is no evidence favoring either design. Results are evenly split.";
-      const winner = direction === "v1" ? "Design 1" : "Design 2";
+      const evidence = classifyEvidence(p);
       const loser = direction === "v1" ? "Design 2" : "Design 1";
-      return `There is ${evidence.toLowerCase()} that ${winner} performs better than ${loser}. This suggests a preference for ${winner}, though results should be interpreted in context.`;
+      return `
+        <p>There is <strong>${evidence.toLowerCase()}</strong> that <strong>${winner}</strong> performs better than <strong>${loser}</strong>.</p>
+        <p>🔬 Simulated Wins: <strong>${winner}</strong> won <strong>${simulatedWins}</strong> out of 100,000 simulations ${emoji}</p>
+        <p>📊 Odds Ratio: Users were <strong>${oddsRatio}</strong>× more likely to succeed with ${winner}</p>
+      `;
     }
 
     function calculate() {
@@ -292,9 +285,6 @@
       document.getElementById("sig").textContent = sig;
 
       const direction = p_dir > 50 ? "v1" : p_rev > 50 ? "v2" : "tie";
-      const takeaway = generateTakeaway(p_dir > 50 ? p_dir : p_rev, direction);
-      document.getElementById("takeaway").textContent = takeaway;
-
       const winner = direction === "v1" ? "Design 1" : direction === "v2" ? "Design 2" : "Neither design";
       const emoji = direction === "v1" ? "💚" : direction === "v2" ? "💙" : "⚖️";
       const simulatedWins = Math.round((Math.max(p_dir, p_rev) / 100) * sims);
@@ -306,10 +296,15 @@
         oddsRatio = (odds2 / odds1).toFixed(2);
       }
 
-      document.getElementById("funfact").innerHTML = `
-        <p>🔬 Simulated Wins: <strong>${winner}</strong> won <strong>${simulatedWins}</strong> of 100,000 simulations ${emoji}</p>
-        <p>📊 Odds Ratio: Users were <strong>${oddsRatio}×</strong> more likely to succeed with ${winner}</p>
-      `;
+      const takeaway = generateTakeaway(
+        p_dir > 50 ? p_dir : p_rev,
+        direction,
+        simulatedWins,
+        oddsRatio,
+        winner,
+        emoji
+      );
+      document.getElementById("takeaway").innerHTML = takeaway;
     }
   </script>
 </body>
