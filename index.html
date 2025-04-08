@@ -211,6 +211,22 @@ function fisherExactP(a, b, c, d) {
   return p;
 }
 
+function classifyEvidence(p) {
+  if (p === 50) return "No evidence";
+  if (p > 50 && p <= 80) return "Weak evidence";
+  if (p > 80 && p <= 95) return "Moderate evidence";
+  if (p > 95 && p <= 99) return "Strong evidence";
+  return "Very strong evidence";
+}
+
+function generateTakeaway(p, direction) {
+  const evidence = classifyEvidence(p);
+  if (p === 50) return "There is no evidence favoring either design. Results are evenly split.";
+  const winner = direction === "v1" ? "Design 1" : "Design 2";
+  const loser = direction === "v1" ? "Design 2" : "Design 1";
+  return `There is ${evidence.toLowerCase()} that ${winner} performs better than ${loser}. This suggests a preference for ${winner}, though results should be interpreted in context.`;
+}
+
 function calculate() {
   const v1_passes = parseInt(document.getElementById("v1_passes").value);
   const v1_total = parseInt(document.getElementById("v1_total").value);
@@ -218,8 +234,10 @@ function calculate() {
   const v2_total = parseInt(document.getElementById("v2_total").value);
 
   if (
-    isNaN(v1_passes) || isNaN(v1_total) || isNaN(v2_passes) || isNaN(v2_total) ||
-    v1_passes > v1_total || v2_passes > v2_total || v1_passes < 0 || v2_passes < 0
+    isNaN(v1_passes) || isNaN(v1_total) ||
+    isNaN(v2_passes) || isNaN(v2_total) ||
+    v1_passes > v1_total || v2_passes > v2_total ||
+    v1_passes < 0 || v2_passes < 0
   ) {
     alert("Please enter valid numbers.");
     return;
@@ -228,16 +246,17 @@ function calculate() {
   const a1 = v1_passes + 1, b1 = v1_total - v1_passes + 1;
   const a2 = v2_passes + 1, b2 = v2_total - v2_passes + 1;
 
-  const simulations = 100000;
+  const sims = 100000;
   let wins = 0;
-  for (let i = 0; i < simulations; i++) {
+  for (let i = 0; i < sims; i++) {
     const s1 = jStat.beta.sample(a1, b1);
     const s2 = jStat.beta.sample(a2, b2);
     if (s1 > s2) wins++;
   }
 
-  const p_dir = Math.round((wins / simulations) * 100);
+  const p_dir = Math.round((wins / sims) * 100);
   const p_rev = 100 - p_dir;
+
   const obs1 = Math.round((v1_passes / v1_total) * 100);
   const obs2 = Math.round((v2_passes / v2_total) * 100);
   const est1 = Math.round((a1 / (a1 + b1)) * 100);
@@ -252,6 +271,7 @@ function calculate() {
   const fisher = fisherExactP(a, b, c, d);
   const sig = fisher < 0.05 ? "Yes" : "No";
 
+  // Update results
   document.getElementById("obs1").textContent = `${obs1}%`;
   document.getElementById("obs2").textContent = `${obs2}%`;
   document.getElementById("est1").textContent = `${est1}%`;
@@ -267,11 +287,10 @@ function calculate() {
   document.getElementById("fisher").textContent = fisher.toFixed(5);
   document.getElementById("sig").textContent = sig;
 
-  const direction = p_dir > 50 ? "v1" : p_dir < 50 ? "v2" : "tie";
+  const direction = p_dir > 50 ? "v1" : p_rev > 50 ? "v2" : "tie";
   const takeaway = generateTakeaway(p_dir > 50 ? p_dir : p_rev, direction);
   document.getElementById("takeaway").textContent = takeaway;
 }
 </script>
-
 </body>
 </html>
