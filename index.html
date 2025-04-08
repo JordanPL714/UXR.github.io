@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Which Version is better?</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f7f9fc;
+      padding: 2rem;
+    }
+    h1 {
+      color: #333;
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .input-group label {
+      flex: 1;
+    }
+    .input-group input {
+      padding: 0.5rem;
+      width: 200px;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #results {
+      display: none;
+      margin-top: 2rem;
+      background: #fff;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      min-height: 0;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 1rem;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    th {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Which version is better?</h1>
+
+  <div class="input-group"><label for="v1_passes">V1 Passes:</label><input type="number" id="v1_passes" /></div>
+  <div class="input-group"><label for="v1_total">V1 Total:</label><input type="number" id="v1_total" /></div>
+  <div class="input-group"><label for="v2_passes">V2 Passes:</label><input type="number" id="v2_passes" /></div>
+  <div class="input-group"><label for="v2_total">V2 Total:</label><input type="number" id="v2_total" /></div>
+
+  <button onclick="calculate()">Calculate</button>
+
+  <div id="results"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.5/jstat.min.js"></script>
+  <script>
+    function calculate() {
+      const v1_passes = parseInt(document.getElementById("v1_passes").value);
+      const v1_total = parseInt(document.getElementById("v1_total").value);
+      const v2_passes = parseInt(document.getElementById("v2_passes").value);
+      const v2_total = parseInt(document.getElementById("v2_total").value);
+
+      if (isNaN(v1_passes) || isNaN(v1_total) || isNaN(v2_passes) || isNaN(v2_total)) {
+        document.getElementById("results").style.display = "block";
+        document.getElementById("results").innerHTML = "<p>Please enter all fields.</p>";
+        return;
+      }
+
+      const a1 = v1_passes + 1;
+      const b1 = v1_total - v1_passes + 1;
+      const a2 = v2_passes + 1;
+      const b2 = v2_total - v2_passes + 1;
+
+      const simulations = 100000;
+      let wins = 0;
+      for (let i = 0; i < simulations; i++) {
+        const s1 = jStat.beta.sample(a1, b1);
+        const s2 = jStat.beta.sample(a2, b2);
+        if (s1 > s2) wins++;
+      }
+
+      const p_direction = Math.round((wins / simulations) * 100);
+      const p_v2_better = 100 - p_direction;
+
+      function classifyEvidence(p) {
+        if (p === 50) return "No evidence (tie)";
+        if (p > 50 && p <= 80) return "Weak evidence";
+        if (p > 80 && p <= 95) return "Moderate evidence";
+        if (p > 95 && p <= 99) return "Strong evidence";
+        if (p > 99) return "Very strong evidence";
+      }
+
+      const evidence_v1 = classifyEvidence(p_direction) || "";
+      const evidence_v2 = classifyEvidence(p_v2_better) || "";
+
+      const observed_p1 = Math.round((v1_passes / v1_total) * 100);
+      const observed_p2 = Math.round((v2_passes / v2_total) * 100);
+
+      const mean1 = Math.round((a1 / (a1 + b1)) * 100);
+      const mean2 = Math.round((a2 / (a2 + b2)) * 100);
+
+      const ci1low = Math.round(jStat.beta.inv(0.025, a1, b1) * 100);
+      const ci1high = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
+      const ci2low = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
+      const ci2high = Math.round(jStat.beta.inv(0.975, a2, b2) * 100);
+
+      const fisher_p = jStat.binomial.cdf(Math.min(v1_passes, v2_passes), v1_total + v2_total, (v1_passes + v2_passes) / (v1_total + v2_total));
+      const sig = fisher_p < 0.05 ? "Yes" : "No";
+      const z = fisher_p > 0 ? jStat.normal.inv(1 - fisher_p / 2, 0, 1).toFixed(2) : "N/A";
+
+      const html = `
+        <table>
+          <tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower Bound</th><th>CI Upper Bound</th></tr>
+          <tr><td>V1</td><td>${observed_p1}%</td><td>${mean1}%</td><td>${ci1low}%</td><td>${ci1high}%</td></tr>
+          <tr><td>V2</td><td>${observed_p2}%</td><td>${mean2}%</td><td>${ci2low}%</td><td>${ci2high}%</td></tr>
+        </table>
+
+        <table>
+          <tr><th>Metric</th><th>V1 > V2</th><th>V2 > V1</th></tr>
+          <tr><td>P-Value (Direction)</td><td>${p_direction}%</td><td>${p_v2_better}%</td></tr>
+          <tr><td>Evidence</td><td>${evidence_v1}</td><td>${evidence_v2}</td></tr>
+        </table>
+
+        <table>
+          <tr><th>Metric</th><th>Value</th></tr>
+          <tr><td>P-Value (Fisher's Exact)</td><td>${fisher_p.toFixed(5)}</td></tr>
+          <tr><td>Statistically Significant?</td><td>${sig}</td></tr>
+          <tr><td>Z-Score</td><td>${z}</td></tr>
+        </table>
+      `;
+
+      document.getElementById("results").style.display = "block";
+      document.getElementById("results").innerHTML = html;
+    }
+  </script>
+</body>
+</html>
