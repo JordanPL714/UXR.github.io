@@ -131,7 +131,9 @@
     <p>Unlock the power of data-driven decisions. Whether you're testing new features, comparing versions, or just looking for clarity, versa’s intuitive calculators give you the insights you need in seconds. Dive deep, get clear answers, and make smarter choices.</p>
   </div>
 
+<div class="calculator-section">
   <div class="container">
+    <!-- A/B Test Calculator Inputs -->
     <div class="input-box">
       <h2>Which design should we use 🔍?</h2>
       <label for="v1_passes">Design 1 (Successes):</label>
@@ -145,20 +147,7 @@
       <button onclick="calculate()">Calculate</button>
     </div>
 
-  <div class="container">
-  <div class="input-box">
-    <h2>How are users feeling? 💬</h2>
-    <label for="user_comment">Paste a user comment below:</label>
-    <textarea id="user_comment" rows="6" placeholder="e.g., I love how easy it is to link my bank account." style="width: 100%; border-radius: 8px; padding: 1rem;"></textarea>
-    <button onclick="analyzeSentiment()">Analyze Sentiment</button>
-  </div>
-
-  <div class="summary">
-    <strong>Sentiment Result:</strong>
-    <div id="sentimentResult">--</div>
-  </div>
-</div>
-
+    <!-- A/B Results Table -->
     <div class="results">
       <table>
         <thead><tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
@@ -185,11 +174,30 @@
       </table>
     </div>
 
+    <!-- A/B Summary -->
     <div class="summary">
       <strong>Summary:</strong>
       <div id="takeaway">--</div>
     </div>
   </div>
+</div>
+
+<!-- 🆕 Sentiment Calculator Section -->
+<div class="calculator-section">
+  <div class="container">
+    <div class="input-box">
+      <h2>How are users feeling? 💬</h2>
+      <label for="user_comment">Paste a user comment below:</label>
+      <textarea id="user_comment" rows="6" placeholder="e.g., I love how easy it is to link my bank account." style="width: 100%; border-radius: 8px; padding: 1rem;"></textarea>
+      <button onclick="analyzeSentiment()">Analyze Sentiment</button>
+    </div>
+
+    <div class="summary">
+      <strong>Sentiment Result:</strong>
+      <div id="sentimentResult">--</div>
+    </div>
+  </div>
+</div>
 
   <script>
     function logFactorial(n) {
