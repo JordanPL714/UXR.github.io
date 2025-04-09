@@ -145,6 +145,20 @@
       <button onclick="calculate()">Calculate</button>
     </div>
 
+  <div class="container">
+  <div class="input-box">
+    <h2>How are users feeling? 💬</h2>
+    <label for="user_comment">Paste a user comment below:</label>
+    <textarea id="user_comment" rows="6" placeholder="e.g., I love how easy it is to link my bank account." style="width: 100%; border-radius: 8px; padding: 1rem;"></textarea>
+    <button onclick="analyzeSentiment()">Analyze Sentiment</button>
+  </div>
+
+  <div class="summary">
+    <strong>Sentiment Result:</strong>
+    <div id="sentimentResult">--</div>
+  </div>
+</div>
+
     <div class="results">
       <table>
         <thead><tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
@@ -306,6 +320,39 @@
       );
       document.getElementById("takeaway").innerHTML = takeaway;
     }
+    async function analyzeSentiment() {
+  const text = document.getElementById("user_comment").value;
+  if (!text.trim()) {
+    alert("Please enter a comment to analyze.");
+    return;
+  }
+
+  const url = "https://REGION-PROJECT.cloudfunctions.net/analyzeSentiment"; // Replace with your actual deployed URL
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+
+    const data = await response.json();
+
+    let interpretation = "";
+    if (data.score > 0.25) interpretation = "😊 Positive sentiment";
+    else if (data.score < -0.25) interpretation = "😞 Negative sentiment";
+    else interpretation = "😐 Neutral or mixed sentiment";
+
+    document.getElementById("sentimentResult").innerHTML = `
+      <p><strong>Score:</strong> ${data.score.toFixed(2)}</p>
+      <p><strong>Magnitude:</strong> ${data.magnitude.toFixed(2)}</p>
+      <p><strong>Interpretation:</strong> ${interpretation}</p>
+    `;
+  } catch (error) {
+    console.error("Error analyzing sentiment:", error);
+    document.getElementById("sentimentResult").textContent = "Something went wrong.";
+  }
+}
   </script>
 </body>
 </html>
