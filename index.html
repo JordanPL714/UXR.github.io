@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Versa - A/B Test Calculator</title>
+  <title>Versa - UXR Tool</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.5/jstat.min.js"></script>
   <style>
     body {
@@ -247,7 +247,6 @@
       return `
         <p>🧠 There is <strong>${evidence.toLowerCase()}</strong> that <strong>${winner}</strong> performs better than <strong>${loser}</strong>.</p>
         <p>🔬 Simulated Wins: <strong>${winner}</strong> won <strong>${simulatedWins}</strong> out of 100,000 simulations ${emoji}</p>
-        <p>📊 Odds Ratio: Users were <strong>${oddsRatio}</strong>× more likely to succeed with ${winner}</p>
       `;
     }
 
