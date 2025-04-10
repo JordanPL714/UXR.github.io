@@ -174,7 +174,7 @@
       <div class="input-box">
         <h2>How are users feeling 💬?</h2>
         <label for="user_comment">Paste one or more open-ended comments (use line breaks between them):</label>
-        <textarea id="user_comment" rows="6" placeholder="e.g.\nI love how intuitive the dashboard is!\nIt's a bit slow to load on mobile." style="width: 90%; border-radius: 8px; padding: 1rem;"></textarea>
+        <textarea id="user_comment" rows="6" placeholder= style="width: 90%; border-radius: 8px; padding: 1rem;"></textarea>
         <button onclick="analyzeSentiment()">Analyze Sentiment</button>
       </div>
       <div class="summary">
@@ -333,7 +333,7 @@
               <tr>
                 <td>${i + 1}</td>
                 <td>${item.score.toFixed(2)}</td>
-                <td>${emojiMap(item.score)}<br><small>${item.interpretation}</td>
+                <td>${emojiMap(item.score)}</td>
               </tr>
             `).join("")}
           </tbody>
