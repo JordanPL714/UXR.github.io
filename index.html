@@ -246,7 +246,7 @@
       const loser = direction === "v1" ? "Design 2" : "Design 1";
       return `
         <p>🧠 There is <strong>${evidence.toLowerCase()}</strong> that <strong>${winner}</strong> performs better than <strong>${loser}</strong>.</p>
-        <p> <strong>${winner}</strong> won <strong>${simulatedWins}</strong> out of 100,000 simulations ${emoji}</p>
+        <p> <strong>${emoji} ${winner}</strong> won <strong>${simulatedWins}</strong> out of 100,000 simulations</p>
         <p></p>
       `;
     }
