@@ -115,8 +115,9 @@
   </div>
 
   <div class="calculator-section">
-  <div class="container">
-    <!-- A/B Test Calculator Inputs -->
+  <div class="container" style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-start;">
+    
+    <!-- Input box -->
     <div class="input-box">
       <h2>Which design should we use 🔍?</h2>
       <label for="v1_passes">Design 1 (Successes):</label>
@@ -129,14 +130,11 @@
       <input type="number" id="v2_total" />
       <button onclick="calculate()">Calculate</button>
     </div>
-  </div>
-</div>
 
-<div class="calculator-section">
-  <div class="container" style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start;">
+    <!-- Results -->
     <div class="results">
       <table>
-        <thead><tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
+        <thead><tr><th>Variant</th><th>Observed</th><th>Best Estimate</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
         <tbody>
           <tr><td>D1</td><td id="obs1">--</td><td id="est1">--</td><td id="ci1low">--</td><td id="ci1high">--</td></tr>
           <tr><td>D2</td><td id="obs2">--</td><td id="est2">--</td><td id="ci2low">--</td><td id="ci2high">--</td></tr>
@@ -154,19 +152,21 @@
       <table>
         <thead><tr><th>Statistical Test</th><th>Value</th></tr></thead>
         <tbody>
-          <tr><td>Fisher’s Exact P</td><td id="fisher">--</td></tr>
+          <tr><td>Fisher’s Exact P Value</td><td id="fisher">--</td></tr>
           <tr><td>Statistically Significant?</td><td id="sig">--</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- A/B Summary -->
-    <div class="summary" style="flex: 1; min-width: 280px;">
+    <!-- Summary -->
+    <div class="summary" style="min-width: 280px;">
       <strong>Summary:</strong>
       <div id="takeaway">--</div>
     </div>
+
   </div>
 </div>
+
 
 <!-- Sentiment Calculator Section -->
   <div class="calculator-section">
