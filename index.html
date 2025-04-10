@@ -14,94 +14,36 @@
       color: #111;
       font-size: 16px;
     }
-    .header-logo {
-      font-size: 1.8rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-    }
-    h1 {
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    h1 span {
-      font-weight: 800;
-    }
-    .intro {
-      max-width: 700px;
-      margin-bottom: 2rem;
-    }
-    .container {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
+    .header-logo { font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; }
+    h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .intro { max-width: 700px; margin-bottom: 2rem; }
+    .container { display: flex; gap: 2rem; flex-wrap: wrap; }
     .input-box {
-      background: #e9fce9;
-      border: 2px solid #b6f1b6;
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      width: 100%;
-      max-width: 360px;
-      box-sizing: border-box;
+      background: #e9fce9; border: 2px solid #b6f1b6; border-radius: 16px;
+      padding: 2rem 1.5rem; width: 100%; max-width: 360px; box-sizing: border-box;
     }
-    .input-box h2 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-top: 0;
-      margin-bottom: 1.5rem;
-      white-space: nowrap;
-    }
-    label {
-      display: block;
-      margin-top: 1.2rem;
-      font-weight: 500;
-    }
+    .input-box h2 { font-size: 1.2rem; font-weight: 700; margin: 0 0 1.5rem; }
+    label { display: block; margin-top: 1.2rem; font-weight: 500; }
     input, textarea {
-      width: 100%;
-      padding: 0.8rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
+      width: 100%; padding: 0.8rem; font-size: 1rem;
+      border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box;
     }
     button {
-      margin-top: 2rem;
-      width: 100%;
-      padding: 0.9rem;
-      font-size: 1rem;
-      font-weight: 700;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      margin-top: 2rem; width: 100%; padding: 0.9rem; font-size: 1rem;
+      font-weight: 700; background-color: #4CAF50; color: white;
+      border: none; border-radius: 8px; cursor: pointer;
     }
-    button:hover {
-      background-color: #45a65e;
-    }
+    button:hover { background-color: #45a65e; }
     .results, .summary {
-      flex: 1;
-      max-width: 500px;
-      background: #f9f9f9;
-      padding: 1.2rem;
-      border-radius: 10px;
-      border: 2px solid #ccc;
-      font-size: 1rem;
+      flex: 1; max-width: 500px; background: #f9f9f9;
+      padding: 1.2rem; border-radius: 10px; border: 2px solid #ccc; font-size: 1rem;
     }
-    .summary {
-      background: #f0f8ff;
-      border-color: #ccd;
-    }
+    .summary { background: #f0f8ff; border-color: #ccd; }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
+      width: 100%; border-collapse: collapse; margin-top: 1rem;
     }
     th, td {
-      border: 1px solid #ccc;
-      padding: 0.6rem;
-      text-align: center;
+      border: 1px solid #ccc; padding: 0.6rem; text-align: center;
     }
     th { background: #eee; }
     .calculator-section { margin-bottom: 3rem; }
@@ -114,67 +56,63 @@
     <p>Unlock the power of data-driven decisions. Whether you're testing new features, comparing versions, or just looking for clarity, Versa gives you the insights you need in seconds.</p>
   </div>
 
+  <!-- A/B Calculator -->
   <div class="calculator-section">
-  <div class="container">
-    <!-- A/B Test Calculator Inputs -->
-    <div class="input-box">
-      <h2>Which design should we use 🔍?</h2>
-      <label for="v1_passes">Design 1 (Successes):</label>
-      <input type="number" id="v1_passes" />
-      <label for="v1_total">Design 1 (Total):</label>
-      <input type="number" id="v1_total" />
-      <label for="v2_passes">Design 2 (Successes):</label>
-      <input type="number" id="v2_passes" />
-      <label for="v2_total">Design 2 (Total):</label>
-      <input type="number" id="v2_total" />
-      <button onclick="calculate()">Calculate</button>
+    <div class="container">
+      <div class="input-box">
+        <h2>Which design should we use 🔍?</h2>
+        <label for="v1_passes">Design 1 (Successes):</label>
+        <input type="number" id="v1_passes" />
+        <label for="v1_total">Design 1 (Total):</label>
+        <input type="number" id="v1_total" />
+        <label for="v2_passes">Design 2 (Successes):</label>
+        <input type="number" id="v2_passes" />
+        <label for="v2_total">Design 2 (Total):</label>
+        <input type="number" id="v2_total" />
+        <button onclick="calculate()">Calculate</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="calculator-section">
-  <div class="container" style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start;">
-    <div class="results">
-      <table>
-        <thead><tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
-        <tbody>
-          <tr><td>D1</td><td id="obs1">--</td><td id="est1">--</td><td id="ci1low">--</td><td id="ci1high">--</td></tr>
-          <tr><td>D2</td><td id="obs2">--</td><td id="est2">--</td><td id="ci2low">--</td><td id="ci2high">--</td></tr>
-        </tbody>
-      </table>
-
-      <table>
-        <thead><tr><th>Metric</th><th>D1 > D2</th><th>D2 > D1</th></tr></thead>
-        <tbody>
-          <tr><td>P-Direction</td><td id="pd1">--</td><td id="pd2">--</td></tr>
-          <tr><td>Evidence</td><td id="ev1">--</td><td id="ev2">--</td></tr>
-        </tbody>
-      </table>
-
-      <table>
-        <thead><tr><th>Statistical Test</th><th>Value</th></tr></thead>
-        <tbody>
-          <tr><td>Fisher’s Exact P</td><td id="fisher">--</td></tr>
-          <tr><td>Statistically Significant?</td><td id="sig">--</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- A/B Summary -->
-    <div class="summary" style="flex: 1; min-width: 280px;">
-      <strong>Summary:</strong>
-      <div id="takeaway">--</div>
+  <div class="calculator-section">
+    <div class="container">
+      <div class="results">
+        <table>
+          <thead><tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
+          <tbody>
+            <tr><td>D1</td><td id="obs1">--</td><td id="est1">--</td><td id="ci1low">--</td><td id="ci1high">--</td></tr>
+            <tr><td>D2</td><td id="obs2">--</td><td id="est2">--</td><td id="ci2low">--</td><td id="ci2high">--</td></tr>
+          </tbody>
+        </table>
+        <table>
+          <thead><tr><th>Metric</th><th>D1 > D2</th><th>D2 > D1</th></tr></thead>
+          <tbody>
+            <tr><td>P-Direction</td><td id="pd1">--</td><td id="pd2">--</td></tr>
+            <tr><td>Evidence</td><td id="ev1">--</td><td id="ev2">--</td></tr>
+          </tbody>
+        </table>
+        <table>
+          <thead><tr><th>Statistical Test</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Fisher’s Exact P</td><td id="fisher">--</td></tr>
+            <tr><td>Statistically Significant?</td><td id="sig">--</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="summary">
+        <strong>Summary:</strong>
+        <div id="takeaway">--</div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Sentiment Calculator Section -->
+  <!-- Sentiment Analyzer -->
   <div class="calculator-section">
     <div class="container">
       <div class="input-box">
         <h2>How are users feeling 💬?</h2>
-        <label for="user_comment">Paste one or more open-ended comments (use line breaks between them):</label>
-        <textarea id="user_comment" rows="6" placeholder="e.g.\nI love how intuitive the dashboard is!\nIt's a bit slow to load on mobile." style="width: 90%; border-radius: 8px; padding: 1rem;"></textarea>
+        <label for="user_comment">Paste one or more open-ended comments (line breaks between):</label>
+        <textarea id="user_comment" rows="6" placeholder="e.g. I love this app!\nSometimes it crashes on login." style="width: 90%; border-radius: 8px; padding: 1rem;"></textarea>
         <button onclick="analyzeSentiment()">Analyze Sentiment</button>
       </div>
       <div class="summary">
@@ -186,58 +124,57 @@
 
   <script>
     async function analyzeSentiment() {
-  const rawText = document.getElementById("user_comment").value;
+      const rawText = document.getElementById("user_comment").value;
 
-  const comments = rawText
-    .split(/
-+/)
-    .map(c => c.trim())
-    .filter(c => c.length > 0);
+      const comments = rawText
+        .split(/\n+/)
+        .map(c => c.trim())
+        .filter(c => c.length > 0);
 
-  if (comments.length === 0) {
-    alert("Please enter at least one comment.");
-    return;
-  }
+      if (comments.length === 0) {
+        alert("Please enter at least one comment.");
+        return;
+      }
 
-  try {
-    const response = await fetch("https://gpt-sentiment-api.vercel.app/api/analyze-sentiment", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ comments })
-    });
+      try {
+        const response = await fetch("https://gpt-sentiment-api.vercel.app/api/analyze-sentiment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comments })
+        });
 
-    const data = await response.json();
-    const resultDiv = document.getElementById("sentimentResult");
+        const data = await response.json();
+        const resultDiv = document.getElementById("sentimentResult");
 
-    const emojiMap = score => {
-      if (score >= 0.75) return "🌟 Strongly positive";
-      if (score >= 0.25) return "😊 Mildly positive";
-      if (score > -0.25) return "😐 Neutral or mixed";
-      if (score > -0.75) return "😞 Mildly negative";
-      return "🚨 Strongly negative";
-    };
+        const emojiMap = score => {
+          if (score >= 0.75) return "🌟 Strongly positive";
+          if (score >= 0.25) return "😊 Mildly positive";
+          if (score > -0.25) return "😐 Neutral or mixed";
+          if (score > -0.75) return "😞 Mildly negative";
+          return "🚨 Strongly negative";
+        };
 
-    resultDiv.innerHTML = `
-      <table>
-        <thead>
-          <tr><th>#</th><th>Score</th><th>Interpretation</th></tr>
-        </thead>
-        <tbody>
-          ${data.result.map((item, i) => `
-            <tr>
-              <td>${i + 1}</td>
-              <td>${item.score.toFixed(2)}</td>
-              <td>${emojiMap(item.score)}<br><small>${item.interpretation}</small></td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    `;
-  } catch (error) {
-    console.error("Error analyzing sentiment:", error);
-    document.getElementById("sentimentResult").textContent = "Something went wrong.";
-  }
-}
-</script>
+        resultDiv.innerHTML = `
+          <table>
+            <thead>
+              <tr><th>#</th><th>Score</th><th>Interpretation</th></tr>
+            </thead>
+            <tbody>
+              ${data.result.map((item, i) => `
+                <tr>
+                  <td>${i + 1}</td>
+                  <td>${item.score.toFixed(2)}</td>
+                  <td>${emojiMap(item.score)}<br><small>${item.interpretation}</small></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+      } catch (error) {
+        console.error("Error analyzing sentiment:", error);
+        document.getElementById("sentimentResult").textContent = "Something went wrong.";
+      }
+    }
+  </script>
 </body>
 </html>
