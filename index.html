@@ -333,11 +333,57 @@
       document.getElementById("takeaway").innerHTML = takeaway;
     }
     async function analyzeSentiment() {
-  const text = document.getElementById("user_comment").value;
-  if (!text.trim()) {
-    alert("Please enter a comment to analyze.");
+  const rawText = document.getElementById("user_comment").value;
+
+  const comments = rawText
+    .split(/\n+/)
+    .map(c => c.trim())
+    .filter(c => c.length > 0);
+
+  if (comments.length === 0) {
+    alert("Please enter at least one comment.");
     return;
   }
+
+  try {
+    const response = await fetch("https://gpt-sentiment-api.vercel.app/api/analyze-sentiment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ comments })
+    });
+
+    const data = await response.json();
+    const resultDiv = document.getElementById("sentimentResult");
+
+    const emojiMap = score => {
+      if (score >= 0.75) return "🌟 Strongly positive";
+      if (score >= 0.25) return "😊 Mildly positive";
+      if (score > -0.25) return "😐 Neutral or mixed";
+      if (score > -0.75) return "😞 Mildly negative";
+      return "🚨 Strongly negative";
+    };
+
+    resultDiv.innerHTML = `
+      <table>
+        <thead>
+          <tr><th>#</th><th>Score</th><th>Interpretation</th></tr>
+        </thead>
+        <tbody>
+          ${data.result.map((item, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${item.score.toFixed(2)}</td>
+              <td>${emojiMap(item.score)}<br><small>${item.interpretation}</small></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch (error) {
+    console.error("Error analyzing sentiment:", error);
+    document.getElementById("sentimentResult").textContent = "Something went wrong.";
+  }
+}
 
   const url = "https://REGION-PROJECT.cloudfunctions.net/analyzeSentiment"; // Replace with your actual deployed URL
 
