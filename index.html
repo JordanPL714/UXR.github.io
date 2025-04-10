@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Versa - A/B Test Calculator</title>
+  <title>Versa - UXR Prediction Tool</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.5/jstat.min.js"></script>
   <style>
     body {
@@ -154,7 +154,7 @@
     <!-- A/B Results Table -->
     <div class="results">
       <table>
-        <thead><tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
+        <thead><tr><th>Variant</th><th>Observed</th><th>Best Estimate</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
         <tbody>
           <tr><td>D1</td><td id="obs1">--</td><td id="est1">--</td><td id="ci1low">--</td><td id="ci1high">--</td></tr>
           <tr><td>D2</td><td id="obs2">--</td><td id="est2">--</td><td id="ci2low">--</td><td id="ci2high">--</td></tr>
@@ -172,7 +172,7 @@
       <table>
         <thead><tr><th>Statistical Test</th><th>Value</th></tr></thead>
         <tbody>
-          <tr><td>Fisher’s Exact P</td><td id="fisher">--</td></tr>
+          <tr><td>Fisher’s Exact P Value</td><td id="fisher">--</td></tr>
           <tr><td>Statistically Significant?</td><td id="sig">--</td></tr>
         </tbody>
       </table>
