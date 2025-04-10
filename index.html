@@ -323,30 +323,22 @@
         if (score > -0.75) return "😞 Mildly negative";
         return "🚨 Strongly negative";
       };
-      rresultDiv.innerHTML = `
-  <table>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Score</th>
-        <th>Intensity</th>
-        <th>Interpretation</th>
-        <th>Tone</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${data.result.map((item, i) => `
-        <tr>
-          <td>${i + 1}</td>
-          <td>${item.score.toFixed(2)}</td>
-          <td>${item.intensity.toFixed(2)}</td>
-          <td>${emojiMap(item.score)}<br><small>${item.interpretation}</small></td>
-          <td>${item.tone}</td>
-        </tr>
-      `).join("")}
-    </tbody>
-  </table>
-`;
+      resultDiv.innerHTML = `
+        <table>
+          <thead>
+            <tr><th>#</th><th>Score</th><th>Interpretation</th></tr>
+          </thead>
+          <tbody>
+            ${data.result.map((item, i) => `
+              <tr>
+                <td>${i + 1}</td>
+                <td>${item.score.toFixed(2)}</td>
+                <td>${emojiMap(item.score)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
     } catch (error) {
       console.error("Error analyzing sentiment:", error);
       document.getElementById("sentimentResult").textContent = "Something went wrong.";
@@ -355,4 +347,3 @@
 </script>
 </body>
 </html>
-
