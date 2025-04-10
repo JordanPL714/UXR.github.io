@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Versa - UXR Tool</title>
+  <title>Versa - A/B Test Calculator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.5/jstat.min.js"></script>
   <style>
     body {
@@ -14,28 +14,34 @@
       color: #111;
       font-size: 16px;
     }
+
     .header-logo {
       font-size: 1.8rem;
       font-weight: 800;
       margin-bottom: 1rem;
     }
+
     h1 {
       font-size: 2rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
+
     h1 span {
       font-weight: 800;
     }
+
     .intro {
       max-width: 700px;
       margin-bottom: 2rem;
     }
+
     .container {
       display: flex;
       gap: 2rem;
       flex-wrap: wrap;
     }
+
     .input-box {
       background: #e9fce9;
       border: 2px solid #b6f1b6;
@@ -45,6 +51,7 @@
       max-width: 360px;
       box-sizing: border-box;
     }
+
     .input-box h2 {
       font-size: 1.2rem;
       font-weight: 700;
@@ -52,12 +59,14 @@
       margin-bottom: 1.5rem;
       white-space: nowrap;
     }
+
     label {
       display: block;
       margin-top: 1.2rem;
       font-weight: 500;
     }
-    input, textarea {
+
+    input {
       width: 100%;
       padding: 0.8rem;
       font-size: 1rem;
@@ -65,6 +74,7 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
+
     button {
       margin-top: 2rem;
       width: 100%;
@@ -77,9 +87,11 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #45a65e;
     }
+
     .results, .summary {
       flex: 1;
       max-width: 500px;
@@ -89,32 +101,41 @@
       border: 2px solid #ccc;
       font-size: 1rem;
     }
+
     .summary {
       background: #f0f8ff;
       border-color: #ccd;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
     }
+
     th, td {
       border: 1px solid #ccc;
       padding: 0.6rem;
       text-align: center;
     }
-    th { background: #eee; }
-    .calculator-section { margin-bottom: 3rem; }
+
+    th {
+  background: #eee;
+}
+      .calculator-section {
+  margin-bottom: 3rem;
+}
+    }
   </style>
 </head>
 <body>
   <div class="header-logo">versa</div>
   <div class="intro">
-    <h1>Your All-in-One UXR prediction tool!</h1>
-    <p>Unlock the power of data-driven decisions. Whether you're testing new features, comparing versions, or just looking for clarity, Versa gives you the insights you need in seconds.</p>
+    <h1> Your All-in-One UXR preditcion tool!</h1>
+    <p>Unlock the power of data-driven decisions. Whether you're testing new features, comparing versions, or just looking for clarity, versa’s intuitive calculators give you the insights you need in seconds. Dive deep, get clear answers, and make smarter choices.</p>
   </div>
 
-  <div class="calculator-section">
+<div class="calculator-section">
   <div class="container">
     <!-- A/B Test Calculator Inputs -->
     <div class="input-box">
@@ -129,11 +150,8 @@
       <input type="number" id="v2_total" />
       <button onclick="calculate()">Calculate</button>
     </div>
-  </div>
-</div>
 
-<div class="calculator-section">
-  <div class="container" style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start;">
+    <!-- A/B Results Table -->
     <div class="results">
       <table>
         <thead><tr><th>Variant</th><th>Observed P</th><th>Best Estimate P</th><th>CI Lower</th><th>CI Upper</th></tr></thead>
@@ -161,211 +179,192 @@
     </div>
 
     <!-- A/B Summary -->
-    <div class="summary" style="flex: 1; min-width: 280px;">
+    <div class="summary">
       <strong>Summary:</strong>
       <div id="takeaway">--</div>
     </div>
   </div>
 </div>
 
-<!-- Sentiment Calculator Section -->
-  <div class="calculator-section">
-    <div class="container">
-      <div class="input-box">
-        <h2>How are users feeling 💬?</h2>
-        <label for="user_comment">Paste one or more open-ended comments (use line breaks between them):</label>
-        <textarea id="user_comment" rows="6" placeholder="e.g.\nI love how intuitive the dashboard is!\nIt's a bit slow to load on mobile." style="width: 90%; border-radius: 8px; padding: 1rem;"></textarea>
-        <button onclick="analyzeSentiment()">Analyze Sentiment</button>
-      </div>
-      <div class="summary">
-        <strong>Sentiment Result:</strong>
-        <div id="sentimentResult">--</div>
-      </div>
+<!-- 🆕 Sentiment Calculator Section -->
+<div class="calculator-section">
+  <div class="container">
+    <div class="input-box">
+      <h2>How are users feeling 💬?</h2>
+      <label for="user_comment">Add comment below:</label>
+      <textarea id="user_comment" rows="4" placeholder="" style="width: 90%; border-radius: 8px; padding: 1rem;"></textarea>
+      <button onclick="analyzeSentiment()">Analyze Sentiment</button>
+    </div>
+
+    <div class="summary">
+      <strong>Sentiment Result:</strong>
+      <div id="sentimentResult">--</div>
     </div>
   </div>
+</div>
 
   <script>
-  function logFactorial(n) {
-    let result = 0;
-    for (let i = 2; i <= n; i++) result += Math.log(i);
-    return result;
-  }
-
-  function logHypergeometric(a, b, c, d) {
-    return logFactorial(a + b) + logFactorial(c + d) + logFactorial(a + c) + logFactorial(b + d)
-         - (logFactorial(a) + logFactorial(b) + logFactorial(c) + logFactorial(d) + logFactorial(a + b + c + d));
-  }
-
-  function fisherExactP(a, b, c, d) {
-    const n1 = a + b;
-    const n2 = c + d;
-    const observedLogP = logHypergeometric(a, b, c, d);
-    const observedP = Math.exp(observedLogP);
-    let p = 0;
-
-    for (let x = 0; x <= Math.min(n1, a + c); x++) {
-      let y = a + c - x;
-      if (y < 0 || y > n2) continue;
-      const prob = Math.exp(logHypergeometric(x, n1 - x, y, n2 - y));
-      if (prob <= observedP + 1e-10) p += prob;
+    function logFactorial(n) {
+      let result = 0;
+      for (let i = 2; i <= n; i++) result += Math.log(i);
+      return result;
     }
 
-    return p;
-  }
-
-  function classifyEvidence(p) {
-    if (p === 50) return "No evidence";
-    if (p > 50 && p <= 80) return "Weak evidence";
-    if (p > 80 && p <= 95) return "Moderate evidence";
-    if (p > 95 && p <= 99) return "Strong evidence";
-    return "Very strong evidence";
-  }
-
-  function generateTakeaway(p, direction, simulatedWins, oddsRatio, winner, emoji) {
-    if (p === 50) return "There is no evidence favoring either design. Results are evenly split.";
-    const evidence = classifyEvidence(p);
-    const loser = direction === "v1" ? "Design 2" : "Design 1";
-    return `
-      <p>🧠 There is <strong>${evidence.toLowerCase()}</strong> that <strong>${winner}</strong> performs better than <strong>${loser}</strong>.</p>
-      <p>🔬 Simulated Wins: <strong>${winner}</strong> won <strong>${simulatedWins}</strong> out of 100,000 simulations ${emoji}</p>
-    `;
-  }
-
-  function calculate() {
-    const v1_passes = parseInt(document.getElementById("v1_passes").value);
-    const v1_total = parseInt(document.getElementById("v1_total").value);
-    const v2_passes = parseInt(document.getElementById("v2_passes").value);
-    const v2_total = parseInt(document.getElementById("v2_total").value);
-
-    if (
-      isNaN(v1_passes) || isNaN(v1_total) ||
-      isNaN(v2_passes) || isNaN(v2_total) ||
-      v1_passes > v1_total || v2_passes > v2_total ||
-      v1_passes < 0 || v2_passes < 0
-    ) {
-      alert("Please enter valid numbers.");
-      return;
+    function logHypergeometric(a, b, c, d) {
+      return logFactorial(a + b) + logFactorial(c + d) + logFactorial(a + c) + logFactorial(b + d)
+           - (logFactorial(a) + logFactorial(b) + logFactorial(c) + logFactorial(d) + logFactorial(a + b + c + d));
     }
 
-    const a1 = v1_passes + 1, b1 = v1_total - v1_passes + 1;
-    const a2 = v2_passes + 1, b2 = v2_total - v2_passes + 1;
+    function fisherExactP(a, b, c, d) {
+      const n1 = a + b;
+      const n2 = c + d;
+      const observedLogP = logHypergeometric(a, b, c, d);
+      const observedP = Math.exp(observedLogP);
+      let p = 0;
 
-    const sims = 100000;
-    let wins = 0;
-    for (let i = 0; i < sims; i++) {
-      const s1 = jStat.beta.sample(a1, b1);
-      const s2 = jStat.beta.sample(a2, b2);
-      if (s1 > s2) wins++;
+      for (let x = 0; x <= Math.min(n1, a + c); x++) {
+        let y = a + c - x;
+        if (y < 0 || y > n2) continue;
+        const prob = Math.exp(logHypergeometric(x, n1 - x, y, n2 - y));
+        if (prob <= observedP + 1e-10) p += prob;
+      }
+
+      return p;
     }
 
-    const p_dir = Math.round((wins / sims) * 100);
-    const p_rev = 100 - p_dir;
-
-    const obs1 = Math.round((v1_passes / v1_total) * 100);
-    const obs2 = Math.round((v2_passes / v2_total) * 100);
-    const est1 = Math.round((a1 / (a1 + b1)) * 100);
-    const est2 = Math.round((a2 / (a2 + b2)) * 100);
-    const ci1_lo = Math.round(jStat.beta.inv(0.025, a1, b1) * 100);
-    const ci1_hi = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
-    const ci2_lo = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
-    const ci2_hi = Math.round(jStat.beta.inv(0.975, a2, b2) * 100);
-
-    const a = v1_passes, b = v1_total - v1_passes;
-    const c = v2_passes, d = v2_total - v2_passes;
-    const fisher = fisherExactP(a, b, c, d);
-    const sig = fisher < 0.05 ? "Yes" : "No";
-
-    document.getElementById("obs1").textContent = `${obs1}%`;
-    document.getElementById("obs2").textContent = `${obs2}%`;
-    document.getElementById("est1").textContent = `${est1}%`;
-    document.getElementById("est2").textContent = `${est2}%`;
-    document.getElementById("ci1low").textContent = `${ci1_lo}%`;
-    document.getElementById("ci1high").textContent = `${ci1_hi}%`;
-    document.getElementById("ci2low").textContent = `${ci2_lo}%`;
-    document.getElementById("ci2high").textContent = `${ci2_hi}%`;
-    document.getElementById("pd1").textContent = `${p_dir}%`;
-    document.getElementById("pd2").textContent = `${p_rev}%`;
-    document.getElementById("ev1").textContent = p_dir > 50 ? classifyEvidence(p_dir) : "--";
-    document.getElementById("ev2").textContent = p_rev > 50 ? classifyEvidence(p_rev) : "--";
-    document.getElementById("fisher").textContent = fisher.toFixed(5);
-    document.getElementById("sig").textContent = sig;
-
-    const direction = p_dir > 50 ? "v1" : p_rev > 50 ? "v2" : "tie";
-    const winner = direction === "v1" ? "Design 1" : direction === "v2" ? "Design 2" : "Neither design";
-    const emoji = direction === "v1" ? "💚" : direction === "v2" ? "💙" : "⚖️";
-    const simulatedWins = Math.round((Math.max(p_dir, p_rev) / 100) * sims);
-
-    let oddsRatio = "N/A";
-    if (v1_passes !== 0 && v2_passes !== 0 && (v1_total - v1_passes) !== 0 && (v2_total - v2_passes) !== 0) {
-      const odds1 = v1_passes / (v1_total - v1_passes);
-      const odds2 = v2_passes / (v2_total - v2_passes);
-      oddsRatio = (odds2 / odds1).toFixed(2);
+    function classifyEvidence(p) {
+      if (p === 50) return "No evidence";
+      if (p > 50 && p <= 80) return "Weak evidence";
+      if (p > 80 && p <= 95) return "Moderate evidence";
+      if (p > 95 && p <= 99) return "Strong evidence";
+      return "Very strong evidence";
     }
 
-    const takeaway = generateTakeaway(
-      p_dir > 50 ? p_dir : p_rev,
-      direction,
-      simulatedWins,
-      oddsRatio,
-      winner,
-      emoji
-    );
-    document.getElementById("takeaway").innerHTML = takeaway;
-  }
-
-  async function analyzeSentiment() {
-    const rawText = document.getElementById("user_comment").value;
-
-    const comments = rawText
-      .split(/
-+/)
-      .map(c => c.trim())
-      .filter(c => c.length > 0);
-
-    if (comments.length === 0) {
-      alert("Please enter at least one comment.");
-      return;
-    }
-
-    try {
-      const response = await fetch("https://gpt-sentiment-api.vercel.app/api/analyze-sentiment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comments })
-      });
-
-      const data = await response.json();
-      const resultDiv = document.getElementById("sentimentResult");
-
-      const emojiMap = score => {
-        if (score >= 0.75) return "🌟 Strongly positive";
-        if (score >= 0.25) return "😊 Mildly positive";
-        if (score > -0.25) return "😐 Neutral or mixed";
-        if (score > -0.75) return "😞 Mildly negative";
-        return "🚨 Strongly negative";
-      };
-
-      resultDiv.innerHTML = `
-        <table>
-          <thead>
-            <tr><th>#</th><th>Score</th><th>Interpretation</th></tr>
-          </thead>
-          <tbody>
-            ${data.result.map((item, i) => `
-              <tr>
-                <td>${i + 1}</td>
-                <td>${item.score.toFixed(2)}</td>
-                <td>${emojiMap(item.score)}<br><small>${item.interpretation}</small></td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
+    function generateTakeaway(p, direction, simulatedWins, oddsRatio, winner, emoji) {
+      if (p === 50) return "There is no evidence favoring either design. Results are evenly split.";
+      const evidence = classifyEvidence(p);
+      const loser = direction === "v1" ? "Design 2" : "Design 1";
+      return `
+        <p>🧠 There is <strong>${evidence.toLowerCase()}</strong> that <strong>${winner}</strong> performs better than <strong>${loser}</strong>.</p>
+        <p>🔬 Simulated Wins: <strong>${winner}</strong> won <strong>${simulatedWins}</strong> out of 100,000 simulations ${emoji}</p>
+        <p>📊 Odds Ratio: Users were <strong>${oddsRatio}</strong>× more likely to succeed with ${winner}</p>
       `;
-    } catch (error) {
-      console.error("Error analyzing sentiment:", error);
-      document.getElementById("sentimentResult").textContent = "Something went wrong.";
     }
+
+    function calculate() {
+      const v1_passes = parseInt(document.getElementById("v1_passes").value);
+      const v1_total = parseInt(document.getElementById("v1_total").value);
+      const v2_passes = parseInt(document.getElementById("v2_passes").value);
+      const v2_total = parseInt(document.getElementById("v2_total").value);
+
+      if (
+        isNaN(v1_passes) || isNaN(v1_total) ||
+        isNaN(v2_passes) || isNaN(v2_total) ||
+        v1_passes > v1_total || v2_passes > v2_total ||
+        v1_passes < 0 || v2_passes < 0
+      ) {
+        alert("Please enter valid numbers.");
+        return;
+      }
+
+      const a1 = v1_passes + 1, b1 = v1_total - v1_passes + 1;
+      const a2 = v2_passes + 1, b2 = v2_total - v2_passes + 1;
+
+      const sims = 100000;
+      let wins = 0;
+      for (let i = 0; i < sims; i++) {
+        const s1 = jStat.beta.sample(a1, b1);
+        const s2 = jStat.beta.sample(a2, b2);
+        if (s1 > s2) wins++;
+      }
+
+      const p_dir = Math.round((wins / sims) * 100);
+      const p_rev = 100 - p_dir;
+
+      const obs1 = Math.round((v1_passes / v1_total) * 100);
+      const obs2 = Math.round((v2_passes / v2_total) * 100);
+      const est1 = Math.round((a1 / (a1 + b1)) * 100);
+      const est2 = Math.round((a2 / (a2 + b2)) * 100);
+      const ci1_lo = Math.round(jStat.beta.inv(0.025, a1, b1) * 100);
+      const ci1_hi = Math.round(jStat.beta.inv(0.975, a1, b1) * 100);
+      const ci2_lo = Math.round(jStat.beta.inv(0.025, a2, b2) * 100);
+      const ci2_hi = Math.round(jStat.beta.inv(0.975, a2, b2) * 100);
+
+      const a = v1_passes, b = v1_total - v1_passes;
+      const c = v2_passes, d = v2_total - v2_passes;
+      const fisher = fisherExactP(a, b, c, d);
+      const sig = fisher < 0.05 ? "Yes" : "No";
+
+      document.getElementById("obs1").textContent = `${obs1}%`;
+      document.getElementById("obs2").textContent = `${obs2}%`;
+      document.getElementById("est1").textContent = `${est1}%`;
+      document.getElementById("est2").textContent = `${est2}%`;
+      document.getElementById("ci1low").textContent = `${ci1_lo}%`;
+      document.getElementById("ci1high").textContent = `${ci1_hi}%`;
+      document.getElementById("ci2low").textContent = `${ci2_lo}%`;
+      document.getElementById("ci2high").textContent = `${ci2_hi}%`;
+      document.getElementById("pd1").textContent = `${p_dir}%`;
+      document.getElementById("pd2").textContent = `${p_rev}%`;
+      document.getElementById("ev1").textContent = p_dir > 50 ? classifyEvidence(p_dir) : "--";
+      document.getElementById("ev2").textContent = p_rev > 50 ? classifyEvidence(p_rev) : "--";
+      document.getElementById("fisher").textContent = fisher.toFixed(5);
+      document.getElementById("sig").textContent = sig;
+
+      const direction = p_dir > 50 ? "v1" : p_rev > 50 ? "v2" : "tie";
+      const winner = direction === "v1" ? "Design 1" : direction === "v2" ? "Design 2" : "Neither design";
+      const emoji = direction === "v1" ? "💚" : direction === "v2" ? "💙" : "⚖️";
+      const simulatedWins = Math.round((Math.max(p_dir, p_rev) / 100) * sims);
+
+      let oddsRatio = "N/A";
+      if (v1_passes !== 0 && v2_passes !== 0 && (v1_total - v1_passes) !== 0 && (v2_total - v2_passes) !== 0) {
+        const odds1 = v1_passes / (v1_total - v1_passes);
+        const odds2 = v2_passes / (v2_total - v2_passes);
+        oddsRatio = (odds2 / odds1).toFixed(2);
+      }
+
+      const takeaway = generateTakeaway(
+        p_dir > 50 ? p_dir : p_rev,
+        direction,
+        simulatedWins,
+        oddsRatio,
+        winner,
+        emoji
+      );
+      document.getElementById("takeaway").innerHTML = takeaway;
+    }
+    async function analyzeSentiment() {
+  const text = document.getElementById("user_comment").value;
+  if (!text.trim()) {
+    alert("Please enter a comment to analyze.");
+    return;
   }
-</script>
+
+  const url = "https://REGION-PROJECT.cloudfunctions.net/analyzeSentiment"; // Replace with your actual deployed URL
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+
+    const data = await response.json();
+
+    let interpretation = "";
+    if (data.score > 0.25) interpretation = "😊 Positive sentiment";
+    else if (data.score < -0.25) interpretation = "😞 Negative sentiment";
+    else interpretation = "😐 Neutral or mixed sentiment";
+
+    document.getElementById("sentimentResult").innerHTML = `
+      <p><strong>Score:</strong> ${data.score.toFixed(2)}</p>
+      <p><strong>Magnitude:</strong> ${data.magnitude.toFixed(2)}</p>
+      <p><strong>Interpretation:</strong> ${interpretation}</p>
+    `;
+  } catch (error) {
+    console.error("Error analyzing sentiment:", error);
+    document.getElementById("sentimentResult").textContent = "Something went wrong.";
+  }
+}
+  </script>
 </body>
 </html>
