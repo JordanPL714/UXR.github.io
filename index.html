@@ -5,21 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>UXR Predictor - UXR Tool</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.5/jstat.min.js"></script>
-  <style>
-    <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-  }
 
-  body {
-    margin: 0;
-    padding: 0 2rem 2rem 2rem;
-    font-family: 'Avenir', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    background: #fff;
-    color: #111;
-    font-size: 16px;
-  }
+  <!-- ✅ Only one style tag -->
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      padding: 0 2rem 2rem 2rem;
+      font-family: 'Avenir', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #fff;
+      color: #111;
+      font-size: 16px;
+    }
+
+    .header-logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      padding: 1rem 2rem;
+      margin: 0;
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100vw; /* optional: ensure full-bleed edge */
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      box-sizing: border-box;
+    }
 
 
 .header-logo {
